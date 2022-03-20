@@ -14,8 +14,8 @@ img2 = cv2.imread(os.path.join(os.getcwd(),'P1/2nd.jpg'), cv2.IMREAD_GRAYSCALE)
 img1 = cv2.resize(img1, (300, 400))
 img2 = cv2.resize(img2, (300, 400))
 
-roi1 = []
-roi2 = []
+roi1, roi2 = [], []
+roi_pos1, roi_pos2 = [], []
 
 def showHistogram(arr):
     for i,col in enumerate(COLOR):
@@ -50,7 +50,7 @@ def diff2PatchArray(patchArr1, patchArr2):
             
         compareResult.append(localResult)
         
-    print(compareResult)
+    return compareResult
     
     
 
@@ -60,20 +60,31 @@ def onMouse(event, x, y, flags, param):
         y1, y2 = y - PATCH_SIZE // 2, y + PATCH_SIZE // 2
         cv2.rectangle(param[0], (x1, y1), (x2, y2), (0, 0, 255), 1)
         param[1].append(param[0][y1:y2+1, x1:x2+1])
+        param[2].append((x, y))
         cv2.putText(param[0], str(len(param[1])), (x-5, y-10), \
                             cv2.FONT_HERSHEY_DUPLEX, 0.5, (0,0,255))
         cv2.imshow(title, param[0])
 
 cv2.imshow(title, img1)
-cv2.setMouseCallback(title, onMouse, [img1, roi1])
+cv2.setMouseCallback(title, onMouse, [img1, roi1, roi_pos1])
 
 cv2.waitKey()
 cv2.destroyAllWindows()
 
 cv2.imshow(title, img2)
-cv2.setMouseCallback(title, onMouse, [img2, roi2])
+cv2.setMouseCallback(title, onMouse, [img2, roi2, roi_pos2])
 
 cv2.waitKey()
 cv2.destroyAllWindows()
 
-diff2PatchArray(roi1, roi2)
+result = diff2PatchArray(roi1, roi2)
+
+img = np.hstack((img1, img2))
+pair = np.argmax(result, axis=1)
+for i, j in enumerate(pair):
+    cv2.line(img, roi_pos1[i], (roi_pos2[j][0] + 300, roi_pos2[j][1]), (0, 0, 255))
+
+cv2.imshow(title, img)
+
+cv2.waitKey()
+cv2.destroyAllWindows()
