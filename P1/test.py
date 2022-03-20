@@ -29,12 +29,12 @@ def displayPatchHistogram(rowcount=2, colcount=4):
     fig, axes = plt.subplots(nrows=rowcount, ncols=colcount)
     
     flattenArr = axes.flatten()
+    print(flattenArr)
     
-    print(patchHistogram)
     for i in range(0,rowcount):
         for j in range(0,colcount):
             
-            axes[i][j].bar(np.arange(32), patchHistogram[i*colcount+j].ravel())
+            axes[i][j].bar(np.arange(32), patchHistogram[i*colcount+j].ravel(), color=colors[i*colcount+j])
             axes[i][j].set_title('Picture '+str(i)+ '/ Patch '+str(j))
             
     fig.tight_layout()
