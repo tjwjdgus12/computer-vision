@@ -20,7 +20,7 @@ img2 = cv2.resize(img2, (IMG_WIDTH, IMG_HEIGHT))
 canvas1 = cv2.cvtColor(img1, cv2.COLOR_GRAY2BGR)
 canvas2 = cv2.cvtColor(img2, cv2.COLOR_GRAY2BGR)
 
-colors = []
+colors = [(224, 235, 114), (137, 233, 247)]
 
 roi1, roi2 = [], []
 roi_pos1, roi_pos2 = [], []
@@ -98,9 +98,10 @@ def diff2PatchArray(patchArr1, patchArr2):
 
 def generate_random_color():
     while True:
-        color = [random.randint(30, 255) for _ in range(3)]
+        color = [random.randint(100, 255) for _ in range(3)]
         var = np.var(color)
-        if var > 1800:
+        if var > 2000:
+            # print(color)
             return tuple(color)
 
 def onMouse(event, x, y, flags, param):
@@ -110,12 +111,12 @@ def onMouse(event, x, y, flags, param):
         
         num = len(param[1])
 
-        if num <= len(colors):
+        if num >= len(colors):
             colors.append(generate_random_color())
 
         cv2.rectangle(param[3], (x1, y1), (x2, y2), colors[num], 1)
         cv2.putText(param[3], str(num), (x-7, y-12), \
-                            cv2.FONT_HERSHEY_DUPLEX, 0.5, colors[num])
+                            cv2.FONT_HERSHEY_DUPLEX, 0.6, colors[num], 1)
 
         param[1].append(param[0][y1:y2+1, x1:x2+1].copy())
         param[2].append((x, y))
@@ -139,13 +140,14 @@ displayPatchHistogram(2, len(roi1))
 
 img = np.hstack((canvas1, canvas2))
 pair = np.argmax(result, axis=1)
-for i, j in enumerate(pair):
-    point1, point2 = np.array(roi_pos1[i]), np.array(roi_pos2[i]) + (IMG_WIDTH, 0)
-    cv2.putText(img, str(round(result[i][j], 3)), tuple((point1 + point2) // 2 + (0, -5)), \
-                            cv2.FONT_HERSHEY_DUPLEX, 0.5, colors[i])
-    cv2.line(img, tuple(point1), tuple(point2), colors[i])
 
-print(result)
+for i, j in enumerate(pair):
+    point1, point2 = np.array(roi_pos1[i]), np.array(roi_pos2[j]) + (IMG_WIDTH, 0)
+    cv2.line(img, tuple(point1), tuple(point2), (0,0,0), 1)
+    cv2.putText(img, str(round(result[i][j], 3)), tuple((point1 + point2) // 2 + (0, -5)), \
+                            cv2.FONT_HERSHEY_DUPLEX, 0.7, colors[i], 1)
+
+print(*result, sep='\n')
 cv2.imshow(title, img)
 
 cv2.waitKey()
