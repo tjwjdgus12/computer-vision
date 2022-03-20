@@ -33,8 +33,13 @@ def onMouse(event, x, y, flags, param):
         cv2.imshow(title, param[0])
 
 cv2.imshow(title, img1)
-
 cv2.setMouseCallback(title, onMouse, [img1, roi1])
+
+cv2.waitKey()
+cv2.destroyAllWindows()
+
+cv2.imshow(title, img2)
+cv2.setMouseCallback(title, onMouse, [img2, roi2])
 
 cv2.waitKey()
 cv2.destroyAllWindows()
