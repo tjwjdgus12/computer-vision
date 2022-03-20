@@ -1,11 +1,10 @@
 import cv2, numpy as np
 import matplotlib.pylab as plt
-import os
 
-img1 = cv2.imread(os.path.join(os.getcwd(),'P1/taekwonv1.jpg'))
-img2 = cv2.imread(os.path.join(os.getcwd(),'P1/taekwonv2.jpg'))
-img3 = cv2.imread(os.path.join(os.getcwd(),'P1/taekwonv3.jpg'))
-img4 = cv2.imread(os.path.join(os.getcwd(),'P1/dr_ochanomizu.jpg'))
+img1 = cv2.imread('img/taekwonv1.jpg')
+img2 = cv2.imread('img/taekwonv2.jpg')
+img3 = cv2.imread('img/taekwonv3.jpg')
+img4 = cv2.imread('img/dr_ochanomizu.jpg')
 
 imgs = [img1, img2, img3, img4]
 hists = []
