@@ -1,18 +1,24 @@
 import cv2
 import numpy as np
+import random
 import matplotlib.pyplot as plt
 import os
 
-PATCH_SIZE = 9
+PATCH_SIZE = 19
+IMG_WIDTH, IMG_HEIGHT = 600, 800
 
-COLOR = ('b','g','r')
 title = 'Project 1'
 
 img1 = cv2.imread(os.path.join(os.getcwd(),'P1/1st.jpg'), cv2.IMREAD_GRAYSCALE)
 img2 = cv2.imread(os.path.join(os.getcwd(),'P1/2nd.jpg'), cv2.IMREAD_GRAYSCALE)
 
-img1 = cv2.resize(img1, (300, 400))
-img2 = cv2.resize(img2, (300, 400))
+img1 = cv2.resize(img1, (IMG_WIDTH, IMG_HEIGHT))
+img2 = cv2.resize(img2, (IMG_WIDTH, IMG_HEIGHT))
+
+canvas1 = cv2.cvtColor(img1, cv2.COLOR_GRAY2BGR)
+canvas2 = cv2.cvtColor(img2, cv2.COLOR_GRAY2BGR)
+
+colors = []
 
 roi1, roi2 = [], []
 roi_pos1, roi_pos2 = [], []
@@ -76,30 +82,41 @@ def diff2PatchArray(patchArr1, patchArr2):
         compareResult.append(localResult)
         
     return compareResult
-    
-    
+
+def generate_random_color():
+    while True:
+        color = [random.randint(30, 255) for _ in range(3)]
+        var = np.var(color)
+        if var > 1800:
+            return color
 
 def onMouse(event, x, y, flags, param):
     if event == cv2.EVENT_LBUTTONDOWN:
         x1, x2 = x - PATCH_SIZE // 2, x + PATCH_SIZE // 2
         y1, y2 = y - PATCH_SIZE // 2, y + PATCH_SIZE // 2
+        
+        num = len(param[1])
+
+        if num <= len(colors):
+            colors.append(generate_random_color())
+
+        cv2.rectangle(param[3], (x1, y1), (x2, y2), colors[num], 1)
+        cv2.putText(param[3], str(num), (x-7, y-12), \
+                            cv2.FONT_HERSHEY_DUPLEX, 0.5, colors[num])
+
         param[1].append(param[0][y1:y2+1, x1:x2+1].copy())
         param[2].append((x, y))
-        
-        
-        cv2.rectangle(param[0], (x1, y1), (x2, y2), (0, 0, 255), 1)
-        cv2.putText(param[0], str(len(param[1])), (x-5, y-10), \
-                            cv2.FONT_HERSHEY_DUPLEX, 0.5, (0,0,255))
-        cv2.imshow(title, param[0])
 
-cv2.imshow(title, img1)
-cv2.setMouseCallback(title, onMouse, [img1, roi1, roi_pos1])
+        cv2.imshow(title, param[3])
+
+cv2.imshow(title, canvas1)
+cv2.setMouseCallback(title, onMouse, [img1, roi1, roi_pos1, canvas1])
 
 cv2.waitKey()
 cv2.destroyAllWindows()
 
-cv2.imshow(title, img2)
-cv2.setMouseCallback(title, onMouse, [img2, roi2, roi_pos2])
+cv2.imshow(title, canvas2)
+cv2.setMouseCallback(title, onMouse, [img2, roi2, roi_pos2, canvas2])
 
 cv2.waitKey()
 cv2.destroyAllWindows()
@@ -107,11 +124,15 @@ cv2.destroyAllWindows()
 result = diff2PatchArray(roi1, roi2)
 displayPatchHistogram(2, len(roi1))
 
-img = np.hstack((img1, img2))
+img = np.hstack((canvas1, canvas2))
 pair = np.argmax(result, axis=1)
 for i, j in enumerate(pair):
-    cv2.line(img, roi_pos1[i], (roi_pos2[j][0] + 300, roi_pos2[j][1]), (0, 0, 255))
+    point1, point2 = np.array(roi_pos1[i]), np.array(roi_pos2[i]) + (IMG_WIDTH, 0)
+    cv2.putText(img, str(round(result[i][j], 3)), (point1 + point2) // 2 + (0, -5), \
+                            cv2.FONT_HERSHEY_DUPLEX, 0.5, colors[i])
+    cv2.line(img, point1, point2, colors[i])
 
+print(result)
 cv2.imshow(title, img)
 
 cv2.waitKey()
