@@ -43,6 +43,15 @@ def diff2PatchArray(patchArr1, patchArr2):
         
     compareResult = []
     
+    for hist in hists1:
+        localResult = []
+        for hist2 in hists2:
+            localResult.append( cv2.compareHist(hist, hist2, cv2.HISTCMP_CORREL) )
+            
+        compareResult.append(localResult)
+        
+    print(compareResult)
+    
     
 
 def onMouse(event, x, y, flags, param):
