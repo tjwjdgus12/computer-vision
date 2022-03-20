@@ -4,6 +4,8 @@ import random
 import matplotlib.pyplot as plt
 import os
 
+from pyparsing import col
+
 PATCH_SIZE = 19
 IMG_WIDTH, IMG_HEIGHT = 600, 800
 
@@ -30,14 +32,26 @@ def displayPatchHistogram(rowcount=2, colcount=4):
     
     flattenArr = axes.flatten()
     
-    for i in range(0,rowcount):
-        for j in range(0,colcount):
-            
-            axes[i][j].bar(np.arange(32), patchHistogram[i*colcount+j].ravel(), color=np.array(    list(reversed(colors[j]))+[255]    )/255.0)
-            axes[i][j].set_title('Picture '+str(i)+ '/ Patch '+str(j),color=np.array(   list(reversed( colors[j])) + [255]  )/255.0)
-            
-    fig.tight_layout()
-    plt.show()
+    if colcount == 1:
+
+        axes[0].bar(np.arange(32), patchHistogram[0].ravel(), color=np.array(    list(reversed(colors[0]))+[255]    )/255.0)
+        axes[0].set_title('Picture '+str(0)+ '/ Patch '+str(0),color=np.array(   list(reversed( colors[0])) + [255]  )/255.0)
+        
+        axes[1].bar(np.arange(32), patchHistogram[1].ravel(), color=np.array(    list(reversed(colors[0]))+[255]    )/255.0)
+        axes[1].set_title('Picture '+str(1)+ '/ Patch '+str(0),color=np.array(   list(reversed( colors[0])) + [255]  )/255.0)
+                
+        fig.tight_layout()
+        plt.show()
+        
+    else:
+        
+        for i in range(0,rowcount):
+            for j in range(0,colcount): 
+                axes[i][j].bar(np.arange(32), patchHistogram[i*colcount+j].ravel(), color=np.array(    list(reversed(colors[j]))+[255]    )/255.0)
+                axes[i][j].set_title('Picture '+str(i)+ '/ Patch '+str(j),color=np.array(   list(reversed( colors[j])) + [255]  )/255.0)
+                
+        fig.tight_layout()
+        plt.show()
     
 # displayPatchHistogram()
     
