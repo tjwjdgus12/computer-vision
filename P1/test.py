@@ -29,13 +29,12 @@ def displayPatchHistogram(rowcount=2, colcount=4):
     fig, axes = plt.subplots(nrows=rowcount, ncols=colcount)
     
     flattenArr = axes.flatten()
-    print(flattenArr)
     
     for i in range(0,rowcount):
         for j in range(0,colcount):
             
-            axes[i][j].bar(np.arange(32), patchHistogram[i*colcount+j].ravel(), color=colors[i*colcount+j])
-            axes[i][j].set_title('Picture '+str(i)+ '/ Patch '+str(j))
+            axes[i][j].bar(np.arange(32), patchHistogram[i*colcount+j].ravel(), color=np.array(    list(reversed(colors[j]))+[255]    )/255.0)
+            axes[i][j].set_title('Picture '+str(i)+ '/ Patch '+str(j),color=np.array(   list(reversed( colors[j])) + [255]  )/255.0)
             
     fig.tight_layout()
     plt.show()
@@ -88,7 +87,7 @@ def generate_random_color():
         color = [random.randint(30, 255) for _ in range(3)]
         var = np.var(color)
         if var > 1800:
-            return color
+            return tuple(color)
 
 def onMouse(event, x, y, flags, param):
     if event == cv2.EVENT_LBUTTONDOWN:
@@ -128,9 +127,9 @@ img = np.hstack((canvas1, canvas2))
 pair = np.argmax(result, axis=1)
 for i, j in enumerate(pair):
     point1, point2 = np.array(roi_pos1[i]), np.array(roi_pos2[i]) + (IMG_WIDTH, 0)
-    cv2.putText(img, str(round(result[i][j], 3)), (point1 + point2) // 2 + (0, -5), \
+    cv2.putText(img, str(round(result[i][j], 3)), tuple((point1 + point2) // 2 + (0, -5)), \
                             cv2.FONT_HERSHEY_DUPLEX, 0.5, colors[i])
-    cv2.line(img, point1, point2, colors[i])
+    cv2.line(img, tuple(point1), tuple(point2), colors[i])
 
 print(result)
 cv2.imshow(title, img)
