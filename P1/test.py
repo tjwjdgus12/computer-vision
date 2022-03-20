@@ -19,6 +19,27 @@ def showHistogram(arr):
         plt.plot(histr,color = col)
         plt.xlim([0,256])
     plt.show()
+    
+def diff2PatchArray(patchArr1, patchArr2):
+    hists1 = []
+    hists2 = []
+    for patch in patchArr1:
+        # hsv = cv2.cvtColor(patch, cv2.COLOR_BGR2HSV)
+        # hist = cv2.calcHist([hsv], [0,1], None, [180,256], [0,180,0, 256])
+        hist = cv2.calcHist([patch],[0,1],None,[256],[0,256])
+        
+        hists1.append(hist)
+        
+    for patch in patchArr2:
+        # hsv = cv2.cvtColor(patch, cv2.COLOR_BGR2HSV)
+        # hist = cv2.calcHist([hsv], [0,1], None, [180,256], [0,180,0, 256])
+        hist = cv2.calcHist([patch],[0,1],None,[256],[0,256])
+        
+        hists2.append(hist)
+        
+    compareResult = []
+    
+    
 
 def onMouse(event, x, y, flags, param):
     if event == cv2.EVENT_LBUTTONDOWN:
