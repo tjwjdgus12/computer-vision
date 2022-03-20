@@ -1,12 +1,13 @@
 import cv2
 import numpy as np
+import os
 
 PATCH_SIZE = 30
 
 title = 'Project 1'
 
-img1 = cv2.imread('P1/1st.jpg')
-img2 = cv2.imread('P1/2nd.jpg')
+img1 = cv2.imread(os.path.join(os.getcwd(),'P1/1st.jpg'))
+img2 = cv2.imread(os.path.join(os.getcwd(),'P1/2nd.jpg'))
 
 img1 = cv2.resize(img1, (600, 800))
 img2 = cv2.resize(img2, (600, 800))
