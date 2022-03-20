@@ -114,9 +114,18 @@ def onMouse(event, x, y, flags, param):
         if num >= len(colors):
             colors.append(generate_random_color())
 
+        cv2.rectangle(param[3], (x1, y1), (x2, y2), (0,0,0), 3)
         cv2.rectangle(param[3], (x1, y1), (x2, y2), colors[num], 1)
+<<<<<<< HEAD
         cv2.putText(param[3], str(num), (x-7, y-12), \
                             cv2.FONT_HERSHEY_DUPLEX, 0.6, colors[num], 1)
+=======
+        cv2.putText(param[3], str(num), (x-7, y-15), \
+                            cv2.FONT_HERSHEY_DUPLEX, 0.5, (0,0,0), thickness=3)
+        cv2.putText(param[3], str(num), (x-7, y-15), \
+                            cv2.FONT_HERSHEY_DUPLEX, 0.5, colors[num], thickness=1)
+        
+>>>>>>> 05b265dfb459474df8d9dffbd739865dd347e947
 
         param[1].append(param[0][y1:y2+1, x1:x2+1].copy())
         param[2].append((x, y))
@@ -142,10 +151,13 @@ img = np.hstack((canvas1, canvas2))
 pair = np.argmax(result, axis=1)
 
 for i, j in enumerate(pair):
-    point1, point2 = np.array(roi_pos1[i]), np.array(roi_pos2[j]) + (IMG_WIDTH, 0)
-    cv2.line(img, tuple(point1), tuple(point2), (0,0,0), 1)
-    cv2.putText(img, str(round(result[i][j], 3)), tuple((point1 + point2) // 2 + (0, -5)), \
-                            cv2.FONT_HERSHEY_DUPLEX, 0.7, colors[i], 1)
+    point1, point2 = np.array(roi_pos1[i]), np.array(roi_pos2[i]) + (IMG_WIDTH, 0)
+    cv2.putText(img, str(round(result[i][j], 3)), tuple((point1 + point2) // 2 + (0, -8)), \
+                            cv2.FONT_HERSHEY_DUPLEX, 0.5, (0,0,0), thickness=3)
+    cv2.putText(img, str(round(result[i][j], 3)), tuple((point1 + point2) // 2 + (0, -8)), \
+                            cv2.FONT_HERSHEY_DUPLEX, 0.5, colors[i], thickness=1)
+    cv2.line(img, tuple(point1), tuple(point2), (0,0,0),thickness=3)
+    cv2.line(img, tuple(point1), tuple(point2), colors[i])
 
 print(*result, sep='\n')
 cv2.imshow(title, img)
