@@ -30,14 +30,14 @@ def diff2PatchArray(patchArr1, patchArr2):
     for patch in patchArr1:
         # hsv = cv2.cvtColor(patch, cv2.COLOR_BGR2HSV)
         # hist = cv2.calcHist([hsv], [0,1], None, [180,256], [0,180,0, 256])
-        hist = cv2.calcHist([patch],[0,1],None,[256],[0,256])
+        hist = cv2.calcHist([patch],[0],None,[256],[0,256])
         
         hists1.append(hist)
         
     for patch in patchArr2:
         # hsv = cv2.cvtColor(patch, cv2.COLOR_BGR2HSV)
         # hist = cv2.calcHist([hsv], [0,1], None, [180,256], [0,180,0, 256])
-        hist = cv2.calcHist([patch],[0,1],None,[256],[0,256])
+        hist = cv2.calcHist([patch],[0],None,[256],[0,256])
         
         hists2.append(hist)
         
@@ -73,3 +73,5 @@ cv2.setMouseCallback(title, onMouse, [img2, roi2])
 
 cv2.waitKey()
 cv2.destroyAllWindows()
+
+diff2PatchArray(roi1, roi2)
