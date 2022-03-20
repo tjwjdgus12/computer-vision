@@ -8,11 +8,11 @@ PATCH_SIZE = 9
 COLOR = ('b','g','r')
 title = 'Project 1'
 
-img1 = cv2.imread(os.path.join(os.getcwd(),'P1/1st.jpg'))
-img2 = cv2.imread(os.path.join(os.getcwd(),'P1/2nd.jpg'))
+img1 = cv2.imread(os.path.join(os.getcwd(),'P1/1st.jpg'), cv2.IMREAD_GRAYSCALE)
+img2 = cv2.imread(os.path.join(os.getcwd(),'P1/2nd.jpg'), cv2.IMREAD_GRAYSCALE)
 
-img1 = cv2.resize(img1, (600, 800))
-img2 = cv2.resize(img2, (600, 800))
+img1 = cv2.resize(img1, (300, 400))
+img2 = cv2.resize(img2, (300, 400))
 
 roi1 = []
 roi2 = []
@@ -56,10 +56,12 @@ def diff2PatchArray(patchArr1, patchArr2):
 
 def onMouse(event, x, y, flags, param):
     if event == cv2.EVENT_LBUTTONDOWN:
-        x1, x2 = x - PATCH_SIZE // 2, x + PATCH_SIZE // 2 + 1
-        y1, y2 = y - PATCH_SIZE // 2, y + PATCH_SIZE // 2 + 1
+        x1, x2 = x - PATCH_SIZE // 2, x + PATCH_SIZE // 2
+        y1, y2 = y - PATCH_SIZE // 2, y + PATCH_SIZE // 2
         cv2.rectangle(param[0], (x1, y1), (x2, y2), (0, 0, 255), 1)
-        param[1].append(param[0][y1:y2, x1:x2])
+        param[1].append(param[0][y1:y2+1, x1:x2+1])
+        cv2.putText(param[0], str(len(param[1])), (x-5, y-10), \
+                            cv2.FONT_HERSHEY_DUPLEX, 0.5, (0,0,255))
         cv2.imshow(title, param[0])
 
 cv2.imshow(title, img1)
