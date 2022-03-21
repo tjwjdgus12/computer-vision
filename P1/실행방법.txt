@@ -1,0 +1,12 @@
+실행 환경
+
+python 3.8.3
+
+패키지
+numpy
+matplotlib
+python-opencv
+
+
+calcHist.exe 바로가기 실행 혹은 dist/calcHist/calcHist.exe 실행
+
