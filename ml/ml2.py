@@ -1,48 +1,34 @@
-from hashlib import new
-import tensorflow as tf
+import numpy as np
 
+import tensorflow as tf
 from keras.models import Sequential
 from keras.layers import Dense
+from tensorflow.keras.utils import to_categorical
 
-import itertools as it
+from sklearn.preprocessing import LabelEncoder
 
-import numpy as np
-import matplotlib.pyplot as plt
- 
 WIDTH = 272
 HEIGHT = 136
 BALL_RADIUS = 3
 
-def getAccuracy(arr):
-    hit = 0
+# 랜덤시드 고정시키기
+np.random.seed(5)
+tf.random.set_seed(5)
 
-    for i,elem in enumerate(arr):
-        if y_train[i] == elem:
-            hit+=1
+# 1. 데이터 준비하기
+import pandas as pd
+dataset = pd.read_csv("data.csv", delimiter=",")
+dataset = dataset.values
 
-    return hit/len(arr)
+# 2. 데이터셋 생성하기 : 700
+x_train = dataset[:100,0:6]
+y_train = dataset[:100,6]
+x_test = dataset[100:,0:6]
+y_test = dataset[100:,6]
 
 def getFlipNumber(n):
-    if n in [1,2,3]:
-        return n+3
-    if n in [4,5,6]:
-        return n-3
-    if n in [7,8,9]:
-        return n+3
-    if n in [10,11,12]:
-        return n-3
-    
-    return n
-
-tf.random.set_seed(0)
-
-data = np.genfromtxt('diabetes.csv',delimiter=',')
-
-x_train = data[:,0:-1]
-y_train = data[:,-1]
-
-x_origin = x_train.copy()
-y_origin = y_train.copy()
+    d = {0:1,1:0,2:3,3:2,4:4}
+    return d[n]
 
 # print(x_train)
 # print(y_train)
@@ -50,8 +36,8 @@ y_origin = y_train.copy()
 # print(x_train.shape)
 # print(y_train.shape)
 
-x_train_copy = data[:,0:-1].copy()
-y_train_copy = data[:,-1].copy()
+x_train_copy = x_train.copy()
+y_train_copy = y_train.copy()
 
 x_train_iter = x_train_copy.copy()
 y_train_iter = y_train_copy.copy()
@@ -70,16 +56,11 @@ y_train_iter = y_train_copy.copy()
 #         y_train_iter= np.append(y_train_iter,y_train_iter[k])
 
 
-
-print("s1",x_train_iter.shape)
-print("s2",y_train_iter.shape)
-
 x_train = x_train_iter.copy()
 y_train = y_train_iter.copy()
 
 x_train_iter_copy = x_train_iter.copy()
 y_train_iter_copy = y_train_iter.copy()
-
 
 # x_train_xflip = x_train_copy.copy()
 # y_train_xflip = y_train_copy.copy()
@@ -120,55 +101,40 @@ for i in range(y_train_flip.shape[0]):
 x_train = np.vstack([x_train, x_train_xflip, x_train_yflip, x_train_flip])
 y_train = np.concatenate([y_train, y_train_xflip, y_train_yflip, y_train_flip])
 
-print(x_train.shape)
-print(y_train.shape)
+#######################
 
-# 2. 뉴런층 만들기
+encoder = LabelEncoder()
+encoder.fit(y_train)
+y_encoded = to_categorical(encoder.transform(y_train))
+
+# 3. 모델 구성하기
 model = Sequential()
+model.add(Dense(12, input_dim=6, activation='relu'))
+model.add(Dense(6, activation='relu'))
+model.add(Dense(5, activation='softmax'))
 
-model.add(Dense(12, input_dim=8, activation='relu'))
-model.add(Dense(8, activation='relu'))
-model.add(Dense(1, activation='sigmoid'))
-
-# model.add(Dense(units=1, activation='softmax'))
-
-
-# 4. 모델 컴파일하기
-model.compile(loss='mse', optimizer='Adam')
+# 4. 모델 학습과정 설정하기
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 
-# 5. 모델 훈련
-model.fit(x_origin, y_origin, epochs=1000, batch_size=64)
+# 5. 모델 학습시키기
+model.fit(x_train, y_encoded, epochs=5000, batch_size=64)
 
-# 5. 은닉층의 출력 확인하기
-intermediate_layer_model = tf.keras.Model(inputs=model.input, outputs=model.layers[0].output)
-intermediate_output = intermediate_layer_model(x_origin)
+# 6. 모델 평가하기
+# scores = model.evaluate(x_test, y_test)
+# print("%s: %.2f%%" %(model.metrics_names[1], scores[1]*100))
+# print("%s: %.2f%%" %(model.metrics_names[1], scores[1]*100))
 
-print('======== Inputs ========')
-print(x_origin)
+def getAccuracy(arr):
+    hit = 0
+    for i,elem in enumerate(arr):
+        print(i+1, x_test[i], y_test[i], elem)
+        if y_train[i] == elem:
+            hit+=1
+    return hit/len(arr)
 
-print('\n======== Weights of Hidden Layer ========')
-print()
-
-print('\n======== Outputs of Hidden Layer ========')
-print(intermediate_output)
-
-
-
-# 6. 출력층의 출력 확인하기
-pred = model.predict(x_origin)
-
-print('\n======== Outputs of Output Layer ========')
-
-# for p in pred:
-#     tmp = [(i, v) for v in enumerate(p)]
-#     print(*p, sep=', ', end='\n')
-
-print(pred.shape)
-
-res = [ np.argmax(p) for p in pred ]
-print(res)
-# print(y_train)
-# for y in y_train:
-#     print(y)
-print( getAccuracy(res) )
+pred = model.predict(x_test)
+for pre in pred:
+    t = [(i, p) for i, p in enumerate(pre)]
+    t.sort(key=lambda x: x[1], reverse=True)
+    print(t)
