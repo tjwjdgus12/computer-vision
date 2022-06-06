@@ -7,7 +7,7 @@ import itertools as it
 
 import numpy as np
 import matplotlib.pyplot as plt
-
+ 
 WIDTH = 816
 HEIGHT = 408
 BALL_RADIUS = 10
