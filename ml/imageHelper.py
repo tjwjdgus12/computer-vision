@@ -10,9 +10,9 @@ import itertools as it
 
 from PIL import Image
 
-WIDTH = 816
-HEIGHT = 408
-BALL_RADIUS = 10
+WIDTH = 272
+HEIGHT = 136
+BALL_RADIUS = 3
 
 data = open('data.csv','a')
 

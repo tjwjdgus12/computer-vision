@@ -3,9 +3,9 @@ import numpy as np
 import table_recognizer
 import ball_recognizer
 
-WIDTH = 816
-HEIGHT = 408
-BALL_RADIUS = 10
+WIDTH = 272
+HEIGHT = 136
+BALL_RADIUS = 3
 
 src = cv2.imread('3-cushion-helper/testimg/8.png')
 table = table_recognizer.get_warped_table(src)

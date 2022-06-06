@@ -1,7 +1,7 @@
 import cv2
 
-WIDTH = 816 + 38
-HEIGHT = 408 + 38
+WIDTH = 272 + 6*2
+HEIGHT = 136 + 6*2
 
 lower_red = (160, 100, 70)
 upper_red = (190, 255, 255)
@@ -29,10 +29,10 @@ def find_color_center(src, color, debug=False):
     if debug: cv2.imshow("debug", src); cv2.waitKey()
     if debug: cv2.imshow("debug", threshold); cv2.waitKey()
 
-    k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7,7))
+    k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3,3))
     threshold = cv2.morphologyEx(threshold, cv2.MORPH_CLOSE, k)
 
-    k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11,11))
+    k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5,5))
     threshold = cv2.morphologyEx(threshold, cv2.MORPH_OPEN, k)
 
     if debug: cv2.imshow("debug", threshold); cv2.waitKey()

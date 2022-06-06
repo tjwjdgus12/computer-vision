@@ -4,13 +4,12 @@ from tensorflow import keras
 
 import itertools as it
 
-
 import numpy as np
 import matplotlib.pyplot as plt
  
-WIDTH = 816
-HEIGHT = 408
-BALL_RADIUS = 10
+WIDTH = 272
+HEIGHT = 136
+BALL_RADIUS = 3
 
 def getAccuracy(arr):
     hit = 0
@@ -39,6 +38,9 @@ data = np.genfromtxt('data.csv',delimiter=',')
 
 x_train = data[:,0:-1]
 y_train = data[:,-1]
+
+x_origin = x_train.copy()
+y_origin = y_train.copy()
 
 # print(x_train)
 # print(y_train)
@@ -120,17 +122,13 @@ print(x_train.shape)
 print(y_train.shape)
 
 # 2. 뉴런층 만들기
-input_layer = tf.keras.layers.InputLayer(input_shape=(6,))
-hidden_layer = tf.keras.layers.Dense(units=4, activation='relu')
-output_layer = tf.keras.layers.Dense(units=12, activation='softmax')
+model = tf.keras.Sequential()
 
-
-# 3. 모델 구성하기
-model = tf.keras.Sequential([
-  input_layer,
-  hidden_layer,
-  output_layer
-  ])
+model.add(tf.keras.layers.Dense(24, input_dim=6, activation='relu'))
+model.add(tf.keras.layers.Dropout(rate=0.2))
+model.add(tf.keras.layers.Dense(12, activation='relu'))
+model.add(tf.keras.layers.Dense(6, activation='relu'))
+model.add(tf.keras.layers.Dense(units=14, activation='softmax'))
 
 
 # 4. 모델 컴파일하기
@@ -138,17 +136,17 @@ model.compile(loss='mse', optimizer='Adam')
 
 
 # 5. 모델 훈련
-model.fit(x_train, y_train, epochs=5)
+model.fit(x_origin, y_origin, epochs=20)
 
 # 5. 은닉층의 출력 확인하기
 intermediate_layer_model = tf.keras.Model(inputs=model.input, outputs=model.layers[0].output)
-intermediate_output = intermediate_layer_model(x_train)
+intermediate_output = intermediate_layer_model(x_origin)
 
 print('======== Inputs ========')
-print(x_train)
+print(x_origin)
 
 print('\n======== Weights of Hidden Layer ========')
-print(hidden_layer.get_weights()[0])
+print()
 
 print('\n======== Outputs of Hidden Layer ========')
 print(intermediate_output)
@@ -156,10 +154,14 @@ print(intermediate_output)
 
 
 # 6. 출력층의 출력 확인하기
-pred = model.predict(x_train)
+pred = model.predict(x_origin)
 
 print('\n======== Outputs of Output Layer ========')
-print(pred)
+
+# for p in pred:
+#     tmp = [(i, v) for v in enumerate(p)]
+#     print(*p, sep=', ', end='\n')
+
 print(pred.shape)
 
 res = [ np.argmax(p) for p in pred ]

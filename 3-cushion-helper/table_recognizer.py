@@ -1,8 +1,8 @@
 import numpy as np
 import cv2
 
-WIDTH = 854
-HEIGHT = 446
+WIDTH = 272 + 6*2
+HEIGHT = 136 + 6*2
 
 lower_blue = (100, 100, 100)
 upper_blue = (120, 255, 255)
@@ -52,7 +52,7 @@ def get_warped_table(src, debug=False):
     dst_point = np.array([[0, 0], [0, HEIGHT-1], [WIDTH-1, HEIGHT-1], [WIDTH-1, 0]], dtype=np.float32)
     matrix = cv2.getPerspectiveTransform(src_point, dst_point)
 
-    dst = cv2.warpPerspective(src, matrix, (WIDTH, HEIGHT))[20:-19, 20:-19]
+    dst = cv2.warpPerspective(src, matrix, (WIDTH, HEIGHT))[6:-6, 6:-6]
     if debug: cv2.imshow("debug", dst); cv2.waitKey()
     return dst
 
