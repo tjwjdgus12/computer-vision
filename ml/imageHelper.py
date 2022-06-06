@@ -14,7 +14,7 @@ WIDTH = 272
 HEIGHT = 136
 BALL_RADIUS = 3
 
-data = open('data.csv','a')
+# data = open('data.csv','a')
 
 def getRandomX():
     return random.randrange(BALL_RADIUS+1,HEIGHT-BALL_RADIUS-1)
@@ -32,6 +32,13 @@ while True:
     p2 = (getRandomY(), getRandomX())
     p3 = (getRandomY(), getRandomX())
 
+    tmp = "14	48	208	98	57	130"
+    nlist = list(map(int, tmp.split()))
+
+    p1 = (nlist[0], nlist[1])
+    p2 = (nlist[2], nlist[3])
+    p3 = (nlist[4], nlist[5])
+    
     p1_ = (p1[0]*4, p1[1]*4)
     p2_ = (p2[0]*4, p2[1]*4)
     p3_ = (p3[0]*4, p3[1]*4)
