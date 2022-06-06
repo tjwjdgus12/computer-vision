@@ -9,7 +9,6 @@ upper_blue = (120, 255, 255)
 
 
 def find_corners(src):
-
     # 파란 색 검출
     src_hsv = cv2.cvtColor(src, cv2.COLOR_BGR2HSV)
     table_img = cv2.inRange(src_hsv, lower_blue, upper_blue)
@@ -37,34 +36,12 @@ def find_corners(src):
         return (point[0] for point in approx)
 
 
-def get_warped_table(src, points):
-    
+def get_warped_table(src):
     # perspective transform matrix 계산
-    src_point = np.array(points, dtype=np.float32)
+    src_point = np.array(find_corners(src), dtype=np.float32)
     dst_point = np.array([[0, 0], [0, HEIGHT-1], [WIDTH-1, HEIGHT-1], [WIDTH-1, 0]], dtype=np.float32)
     matrix = cv2.getPerspectiveTransform(src_point, dst_point)
 
     # warp, 테이블 테두리 제거
     dst = cv2.warpPerspective(src, matrix, (WIDTH, HEIGHT))[20:-19, 20:-19]
-
     return dst
-
-    src_hsv = cv2.cvtColor(dst, cv2.COLOR_BGR2HSV)
-    yellow_img = cv2.inRange(src_hsv, lower_white, upper_white)
-    k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9,9))
-    yellow_img_opening = cv2.morphologyEx(yellow_img, cv2.MORPH_OPEN, k)
-
-    contours, _ = cv2.findContours(yellow_img_opening, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    contour = max(contours, key=lambda x: cv2.contourArea(x))
-    mmt = cv2.moments(contour)
-    cx = int(mmt['m10']/mmt['m00'])
-    cy = int(mmt['m01']/mmt['m00'])
-
-cv2.drawContours(dst, contours, -1, (0, 255, 255), 2)
-cv2.circle(dst, (cx, cy), 2, (0, 0, 255), -1)
-
-cv2.imshow('dst', dst)
-cv2.imshow('white', yellow_img_opening)
-
-cv2.waitKey()
-cv2.destroyAllWindows()
