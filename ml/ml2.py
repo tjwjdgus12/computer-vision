@@ -5,6 +5,8 @@ from keras.models import Sequential
 from keras.layers import Dense
 from tensorflow.keras.utils import to_categorical
 
+import itertools as it
+
 from sklearn.preprocessing import LabelEncoder
 
 WIDTH = 272
@@ -44,16 +46,16 @@ y_train_iter = y_train_copy.copy()
 
 
 
-# for k, x in enumerate(x_train_copy):
-#     iteration = it.product([-1,0,1],repeat=6)
-#     for iters in iteration:
-#         new_x = x.copy()
+for k, x in enumerate(x_train_copy):
+    iteration = it.product([-1,0,1],repeat=6)
+    for iters in iteration:
+        new_x = x.copy()
 
-#         for i, iter in enumerate(iters):
-#             new_x[i] = new_x[i] + iter
+        for i, iter in enumerate(iters):
+            new_x[i] = new_x[i] + iter
 
-#         x_train_iter= np.vstack([x_train_iter,new_x])
-#         y_train_iter= np.append(y_train_iter,y_train_iter[k])
+        x_train_iter= np.vstack([x_train_iter,new_x])
+        y_train_iter= np.append(y_train_iter,y_train_iter[k])
 
 
 x_train = x_train_iter.copy()
@@ -111,6 +113,9 @@ y_encoded = to_categorical(encoder.transform(y_train))
 model = Sequential()
 model.add(Dense(12, input_dim=6, activation='relu'))
 model.add(Dense(6, activation='relu'))
+model.add(Dense(6, activation='relu'))
+model.add(Dense(6, activation='relu'))
+
 model.add(Dense(5, activation='softmax'))
 
 # 4. 모델 학습과정 설정하기
@@ -118,7 +123,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 
 
 # 5. 모델 학습시키기
-model.fit(x_train, y_encoded, epochs=5000, batch_size=64)
+model.fit(x_train, y_encoded, epochs=50, batch_size=64)
 
 # 6. 모델 평가하기
 # scores = model.evaluate(x_test, y_test)
