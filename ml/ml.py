@@ -1,5 +1,9 @@
+from hashlib import new
 import tensorflow as tf
 from tensorflow import keras
+
+import itertools as it
+
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -45,8 +49,39 @@ y_train = data[:,-1]
 x_train_copy = data[:,0:-1].copy()
 y_train_copy = data[:,-1].copy()
 
-x_train_xflip = x_train_copy.copy()
-y_train_xflip = y_train_copy.copy()
+x_train_iter = x_train_copy.copy()
+y_train_iter = y_train_copy.copy()
+
+
+
+for k, x in enumerate(x_train_copy):
+    iteration = it.product([-1,0,1],repeat=6)
+    for iters in iteration:
+        new_x = x.copy()
+
+        for i, iter in enumerate(iters):
+            new_x[i] = new_x[i] + iter
+
+        x_train_iter= np.vstack([x_train_iter,new_x])
+        y_train_iter= np.append(y_train_iter,y_train_iter[k])
+
+
+
+print("s1",x_train_iter.shape)
+print("s2",y_train_iter.shape)
+
+x_train = x_train_iter.copy()
+y_train = y_train_iter.copy()
+
+x_train_iter_copy = x_train_iter.copy()
+y_train_iter_copy = y_train_iter.copy()
+
+
+# x_train_xflip = x_train_copy.copy()
+# y_train_xflip = y_train_copy.copy()
+
+x_train_xflip = x_train_iter_copy.copy()
+y_train_xflip = y_train_iter_copy.copy()
 
 x_train_xflip[:, 0] = WIDTH - x_train_xflip[:,0]
 x_train_xflip[:, 2] = WIDTH - x_train_xflip[:,2]
@@ -55,8 +90,8 @@ for i in range(y_train_xflip.shape[0]):
     y_train_xflip[i] = getFlipNumber(y_train_xflip[i])
 
 
-x_train_yflip = x_train_copy.copy()
-y_train_yflip = y_train_copy.copy()
+x_train_yflip = x_train_iter_copy.copy()
+y_train_yflip = y_train_iter_copy.copy()
 
 x_train_yflip[:, 1] = HEIGHT - x_train_yflip[:,1]
 x_train_yflip[:, 3] = HEIGHT - x_train_yflip[:,3]
@@ -66,8 +101,8 @@ for i in range(y_train_yflip.shape[0]):
 
 
 
-x_train_flip = x_train_copy.copy()
-y_train_flip = y_train_copy.copy()
+x_train_flip = x_train_iter_copy.copy()
+y_train_flip = y_train_iter_copy.copy()
 
 x_train_flip[:, 0] = WIDTH - x_train_flip[:,0]
 x_train_flip[:, 2] = WIDTH - x_train_flip[:,2]
@@ -78,8 +113,8 @@ x_train_flip[:, 5] = HEIGHT - x_train_flip[:,5]
 for i in range(y_train_flip.shape[0]):
     y_train_flip[i] = getFlipNumber(y_train_flip[i])
 
-# x_train = np.vstack([x_train, x_train_xflip, x_train_yflip, x_train_flip])
-# y_train = np.concatenate([y_train, y_train_xflip, y_train_yflip, y_train_flip])
+x_train = np.vstack([x_train, x_train_xflip, x_train_yflip, x_train_flip])
+y_train = np.concatenate([y_train, y_train_xflip, y_train_yflip, y_train_flip])
 
 print(x_train.shape)
 print(y_train.shape)
@@ -102,7 +137,8 @@ model = tf.keras.Sequential([
 model.compile(loss='mse', optimizer='Adam')
 
 
-
+# 5. 모델 훈련
+model.fit(x_train, y_train, epochs=5)
 
 # 5. 은닉층의 출력 확인하기
 intermediate_layer_model = tf.keras.Model(inputs=model.input, outputs=model.layers[0].output)
@@ -128,5 +164,7 @@ print(pred.shape)
 
 res = [ np.argmax(p) for p in pred ]
 print(res)
-print(y_train)
+# print(y_train)
+# for y in y_train:
+#     print(y)
 print( getAccuracy(res) )
