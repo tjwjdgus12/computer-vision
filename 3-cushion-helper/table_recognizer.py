@@ -8,20 +8,21 @@ lower_blue = (100, 100, 100)
 upper_blue = (120, 255, 255)
 
 
-def find_corners(src):
-    # 파란 색 검출
+def find_corners(src, debug=False):
     src_hsv = cv2.cvtColor(src, cv2.COLOR_BGR2HSV)
     table_img = cv2.inRange(src_hsv, lower_blue, upper_blue)
+    
+    if debug: cv2.imshow("debug", src); cv2.waitKey()
+    if debug: cv2.imshow("debug", table_img); cv2.waitKey()
 
-    # 빈공간 메꾸기(morphology closing)
     k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5,5))
     table_img_closing = cv2.morphologyEx(table_img, cv2.MORPH_CLOSE, k)
 
-    # 가장 큰 파란 영역 컨투어 계산
+    if debug: cv2.imshow("debug", table_img_closing); cv2.waitKey()
+
     contours, _ = cv2.findContours(table_img_closing, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     contour = max(contours, key=lambda x: cv2.contourArea(x))
 
-    # 컨투어 근사
     epsilon = 0.02 * cv2.arcLength(contour, True)
     approx = cv2.approxPolyDP(contour, epsilon, True)
 
@@ -29,19 +30,34 @@ def find_corners(src):
         print('Table recognizaion failed!')
         exit()
 
-    # 가로 point가 먼저 나타나도록 조정
-    if np.linalg.norm(approx[1][0]-approx[0][0]) < np.linalg.norm(approx[2][0]-approx[1][0]):
-        return (approx[1][0], approx[2][0], approx[3][0], approx[0][0])
+    if debug:
+        src_tmp = src.copy()
+        cv2.drawContours(src_tmp, [approx], -1, (0, 255, 0), 3)
+        cv2.imshow("debug", src_tmp);
+        cv2.waitKey()
+    
+    side_length = [np.linalg.norm(approx[i][0]-approx[i+1][0]) for i in range(-1, 3)]
+    upper_left_point_idx = min(range(4), key=lambda i: approx[i][0][0]+approx[i][0][1])
+    
+    if side_length[upper_left_point_idx] > side_length[(upper_left_point_idx+1)%4]:
+        si = upper_left_point_idx
     else:
-        return (point[0] for point in approx)
+        si = (upper_left_point_idx + 1) % 4
+    
+    return (approx[si][0], approx[(si+1)%4][0], approx[(si+2)%4][0], approx[(si+3)%4][0])
 
 
-def get_warped_table(src):
-    # perspective transform matrix 계산
-    src_point = np.array(find_corners(src), dtype=np.float32)
+def get_warped_table(src, debug=False):
+    src_point = np.array(find_corners(src, debug), dtype=np.float32)
     dst_point = np.array([[0, 0], [0, HEIGHT-1], [WIDTH-1, HEIGHT-1], [WIDTH-1, 0]], dtype=np.float32)
     matrix = cv2.getPerspectiveTransform(src_point, dst_point)
 
-    # warp, 테이블 테두리 제거
     dst = cv2.warpPerspective(src, matrix, (WIDTH, HEIGHT))[20:-19, 20:-19]
+    if debug: cv2.imshow("debug", dst); cv2.waitKey()
     return dst
+
+
+if __name__ == "__main__":
+    src = cv2.imread('3-cushion-helper/testimg/4.jpg')
+    src = cv2.resize(src, (0,0), fx=0.5, fy=0.5)
+    get_warped_table(src, debug=True)
