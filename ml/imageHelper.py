@@ -24,7 +24,7 @@ def getRandomY():
 
 i=0
 while True:
-    im = Image.new("RGB",(WIDTH,HEIGHT),(0,0,0))
+    im = Image.new("RGB",(WIDTH*4,HEIGHT*4),(0,0,0))
 
     img = np.asarray(im)
 
@@ -32,10 +32,13 @@ while True:
     p2 = (getRandomY(), getRandomX())
     p3 = (getRandomY(), getRandomX())
 
+    p1_ = (p1[0]*4, p1[1]*4)
+    p2_ = (p2[0]*4, p2[1]*4)
+    p3_ = (p3[0]*4, p3[1]*4)
 
-    cv2.circle(img,p1,BALL_RADIUS,(255,255,255),-1)
-    cv2.circle(img,p2,BALL_RADIUS,(0,0,255),-1)
-    cv2.circle(img,p3,BALL_RADIUS,(0,255,255),-1)
+    cv2.circle(img,p1_,BALL_RADIUS*4,(255,255,255),-1)
+    cv2.circle(img,p2_,BALL_RADIUS*4,(0,0,255),-1)
+    cv2.circle(img,p3_,BALL_RADIUS*4,(0,255,255),-1)
 
 
     cv2.imshow('test'+str(i),img)
