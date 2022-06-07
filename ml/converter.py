@@ -6,6 +6,7 @@ HEIGHT = 136
 BALL_RADIUS = 3
 
 def str2img(string):
+    string = string.replace(',', ' ')
     ball_pos = list(map(int, string.split()))
 
     white_ball_pos = (ball_pos[0]*4, ball_pos[1]*4)
