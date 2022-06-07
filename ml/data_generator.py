@@ -13,7 +13,7 @@ import random
 import cv2
 import tensorflow as tf
 
-MODEL_NAME = "ml_model"
+MODEL_NAME = "test2"
 
 WIDTH = 272
 HEIGHT = 136
