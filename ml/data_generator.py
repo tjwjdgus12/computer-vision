@@ -1,0 +1,70 @@
+'''
+Alt + Click : 흰색 공 배치
+Shift + Click : 빨간색 공 배치
+Ctrl + Click : 노란색 공 배치
+Space : 공 무작위 배치
+숫자키 (0,1,2,3,4) : 데이터 라벨링 + 저장
+Esc : 종료
+'''
+
+import numpy as np
+import random
+import cv2
+
+WIDTH = 272
+HEIGHT = 136
+BALL_RADIUS = 3
+
+colors = [(255, 255, 255), (0, 0, 255), (0, 255, 255)]
+circles = [None, None, None]
+
+class Circle:
+    def __init__(self, pos, color):
+        self.pos = pos
+        self.color = color
+
+def getRandomPos():
+    return (random.randrange(BALL_RADIUS+1, WIDTH-BALL_RADIUS-1), random.randrange(BALL_RADIUS+1, HEIGHT-BALL_RADIUS-1))
+
+def getTable(circles):
+    table = np.zeros((HEIGHT*4, WIDTH*4, 3), dtype=np.float32)
+    for circle in circles:
+        if circle:
+            cv2.circle(table, (circle.pos[0]*4, circle.pos[1]*4), 20, circle.color, -1)
+    return table
+
+def writeData(y):
+    with open('data.csv', 'a') as file:
+        pos = sum([circle.pos for circle in circles] + [(y,)], ())
+        data = ','.join(map(str, pos))
+        file.write(data + '\n')
+        print("Write Success:", data)
+
+def onMouse(event, x, y, flags, param):
+    if event == cv2.EVENT_FLAG_LBUTTON:
+        if flags == 33: # White: Alt
+            circles[0] = Circle((x//4, y//4), colors[0])
+        elif flags == 17: # Red: Shift
+            circles[1] = Circle((x//4, y//4), colors[1])
+        elif flags == 9: # Yellow: Ctrl
+            circles[2] = Circle((x//4, y//4), colors[2])
+        cv2.imshow("table", getTable(circles))
+
+cv2.imshow("table", getTable(circles))
+cv2.setMouseCallback("table", onMouse)
+
+while True:  
+    key = cv2.waitKey()
+
+    if ord('0') <= key <= ord('4'):
+        writeData(chr(key))
+
+    elif key == 32:
+        for i in range(3):
+            circles[i] = Circle(getRandomPos(), colors[i])
+            cv2.imshow("table", getTable(circles))
+
+    elif key == 27:
+        break
+
+cv2.destroyAllWindows()

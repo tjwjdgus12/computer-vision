@@ -7,7 +7,7 @@ WIDTH = 272
 HEIGHT = 136
 BALL_RADIUS = 3
 
-src = cv2.imread('3-cushion-helper/testimg/8.png')
+src = cv2.imread('3-cushion-helper/testimg/4.jpg')
 table = table_recognizer.get_warped_table(src)
 
 blank = np.zeros((HEIGHT, WIDTH, 3), dtype=np.float32)
@@ -22,3 +22,4 @@ cv2.circle(blank, red_ball_point, BALL_RADIUS, (0,0,255), -1)
 
 cv2.imshow("result", blank)
 cv2.waitKey()
+cv2.destroyAllWindows()
