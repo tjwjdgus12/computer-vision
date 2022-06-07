@@ -4,19 +4,29 @@ Shift + Click : 빨간색 공 배치
 Ctrl + Click : 노란색 공 배치
 Space : 공 무작위 배치
 숫자키 (0,1,2,3,4) : 데이터 라벨링 + 저장
+영어키 (p) : 미리 학습시킨 모델로 결과 예측
 Esc : 종료
 '''
 
 import numpy as np
 import random
 import cv2
+import tensorflow as tf
+
+MODEL_NAME = "ml_model"
 
 WIDTH = 272
 HEIGHT = 136
 BALL_RADIUS = 3
 
 colors = [(255, 255, 255), (0, 0, 255), (0, 255, 255)]
+label_name = ["빨간공 왼쪽", "빨간공 오른쪽", "노란공 왼쪽", "노란공 오른쪽", "빈 쿠션"]
 circles = [None, None, None]
+
+try:
+    model = tf.keras.models.load_model(MODEL_NAME)
+except:
+    pass
 
 class Circle:
     def __init__(self, pos, color):
@@ -53,6 +63,7 @@ def onMouse(event, x, y, flags, param):
 cv2.imshow("table", getTable(circles))
 cv2.setMouseCallback("table", onMouse)
 
+
 while True:  
     key = cv2.waitKey()
 
@@ -63,6 +74,13 @@ while True:
         for i in range(3):
             circles[i] = Circle(getRandomPos(), colors[i])
             cv2.imshow("table", getTable(circles))
+
+    elif key == ord('p'):
+        result = model.predict([sum([circle.pos for circle in circles], ())])[0]
+        result = [(i, round(p*100)) for i, p in enumerate(result)]
+        result.sort(key=lambda x: x[1], reverse=True)
+        for label, prob in result:
+            print(f"{prob}%: {label_name[label]}") 
 
     elif key == 27:
         break

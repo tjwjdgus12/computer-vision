@@ -115,10 +115,10 @@ y_encoded = to_categorical(encoder.transform(y_train))
 
 # 3. 모델 구성하기
 model = Sequential()
-model.add(Dense(16, input_dim=6, activation='relu'))
+model.add(Dense(24, input_dim=6, activation='relu'))
 model.add(Dense(32, activation='relu'))
-model.add(Dropout(0.15))
-model.add(Dense(24, activation='relu'))
+model.add(Dropout(0.1))
+model.add(Dense(32, activation='relu'))
 model.add(Dense(24, activation='relu'))
 
 model.add(Dense(5, activation='softmax'))
@@ -150,4 +150,6 @@ for pre in pred:
     t.sort(key=lambda x: x[1], reverse=True)
     print(t)
 
-model.save("ml_model")
+model_file_name = input("[save] Input model name: ")
+if model_file_name != "":
+    model.save(model_file_name)
