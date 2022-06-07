@@ -15,7 +15,6 @@ BALL_RADIUS = 3
 np.random.seed(5)
 tf.random.set_seed(5)
 
-print("Data loading...")
 
 # 1. 데이터 준비하기
 import pandas as pd
@@ -27,8 +26,6 @@ x_train = dataset[:200,0:6]
 y_train = dataset[:200,6]
 x_test = dataset[200:,0:6]
 y_test = dataset[200:,6]
-
-print("Data expanding...")
 
 def getFlipNumber(n):
     d = {0:1,1:0,2:3,3:2,4:4}
@@ -65,8 +62,6 @@ y_train = y_train_iter.copy()
 x_train_iter_copy = x_train_iter.copy()
 y_train_iter_copy = y_train_iter.copy()
 
-print("Data expanding...")
-
 x_train_xflip = x_train_iter_copy.copy()
 y_train_xflip = y_train_iter_copy.copy()
 
@@ -87,7 +82,6 @@ for i in range(y_train_yflip.shape[0]):
     y_train_yflip[i] = getFlipNumber(y_train_yflip[i])
 
 
-
 x_train_flip = x_train_iter_copy.copy()
 y_train_flip = y_train_iter_copy.copy()
 
@@ -102,8 +96,6 @@ for i in range(y_train_flip.shape[0]):
 
 x_train = np.vstack([x_train, x_train_xflip, x_train_yflip, x_train_flip])
 y_train = np.concatenate([y_train, y_train_xflip, y_train_yflip, y_train_flip])
-
-print("Data expanding complete")
 
 #######################
 
