@@ -23,10 +23,10 @@ dataset = pd.read_csv("data.csv", delimiter=",")
 dataset = dataset.values
 
 # 2. 데이터셋 생성하기 : 700
-x_train = dataset[:100,0:6]
-y_train = dataset[:100,6]
-x_test = dataset[100:,0:6]
-y_test = dataset[100:,6]
+x_train = dataset[:200,0:6]
+y_train = dataset[:200,6]
+x_test = dataset[200:,0:6]
+y_test = dataset[200:,6]
 
 def getFlipNumber(n):
     d = {0:1,1:0,2:3,3:2,4:4}
@@ -124,6 +124,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 
 # 5. 모델 학습시키기
 model.fit(x_train, y_encoded, epochs=50, batch_size=64)
+model.summary()
 
 # 6. 모델 평가하기
 # scores = model.evaluate(x_test, y_test)
@@ -138,8 +139,10 @@ def getAccuracy(arr):
             hit+=1
     return hit/len(arr)
 
-pred = model.predict(x_test)
-for pre in pred:
-    t = [(i, p) for i, p in enumerate(pre)]
-    t.sort(key=lambda x: x[1], reverse=True)
-    print(t)
+# pred = model.predict(x_test)
+# for pre in pred:
+#     t = [(i, p) for i, p in enumerate(pre)]
+#     t.sort(key=lambda x: x[1], reverse=True)
+#     print(t)
+
+model.save("my_model")
