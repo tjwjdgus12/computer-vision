@@ -13,7 +13,7 @@ import random
 import cv2
 from keras.models import load_model
 
-MODEL_NAME = "temp_model2.h5"
+MODEL_NAME = "3-cushion-helper/model.h5"
 
 WIDTH = 272
 HEIGHT = 136
@@ -41,7 +41,7 @@ def getTable(circles):
     return table
 
 def writeData(y):
-    with open('data.csv', 'a') as file:
+    with open('3-cushion-helper/ml/data.csv', 'a') as file:
         pos = sum([circle.pos for circle in circles] + [(y,)], ())
         data = ','.join(map(str, pos))
         file.write(data + '\n')

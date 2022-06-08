@@ -26,7 +26,7 @@ cv2.circle(blank, yellow_ball_point, BALL_RADIUS, (0,255,255), -1)
 label_name = ["빨간공 왼쪽", "빨간공 오른쪽", "노란공 왼쪽", "노란공 오른쪽", "빈 쿠션"]
 
 from keras.models import load_model
-model = load_model("model_jh1")
+model = load_model("3-cushion-helper/model.h5")
 
 result = model.predict([white_ball_point + red_ball_point + yellow_ball_point])[0]
 result = [(i, round(p*100)) for i, p in enumerate(result)]
