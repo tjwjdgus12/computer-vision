@@ -3,7 +3,7 @@ import cv2
 
 WIDTH = 272
 HEIGHT = 136
-BALL_RADIUS = 3
+BALL_RADIUS = 14
 
 def str2img(string):
     string = string.replace(',', ' ')
@@ -15,9 +15,9 @@ def str2img(string):
 
     table = np.zeros((HEIGHT*4, WIDTH*4, 3), dtype=np.float32)
 
-    cv2.circle(table, white_ball_pos, BALL_RADIUS*4, (255,255,255), -1)
-    cv2.circle(table, red_ball_pos, BALL_RADIUS*4, (0,0,255), -1)
-    cv2.circle(table, yellow_ball_pos, BALL_RADIUS*4, (0,255,255), -1)
+    cv2.circle(table, white_ball_pos, 12, (255,255,255), -1)
+    cv2.circle(table, red_ball_pos, BALL_RADIUS, (0,0,255), -1)
+    cv2.circle(table, yellow_ball_pos, BALL_RADIUS, (0,255,255), -1)
 
     return table
 

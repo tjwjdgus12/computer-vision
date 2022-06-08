@@ -17,7 +17,7 @@ MODEL_NAME = "temp_model"
 
 WIDTH = 272
 HEIGHT = 136
-BALL_RADIUS = 3
+BALL_RADIUS = 14
 
 colors = [(255, 255, 255), (0, 0, 255), (0, 255, 255)]
 label_name = ["빨간공 왼쪽", "빨간공 오른쪽", "노란공 왼쪽", "노란공 오른쪽", "빈 쿠션"]
@@ -31,13 +31,13 @@ class Circle:
         self.color = color
 
 def getRandomPos():
-    return (random.randrange(BALL_RADIUS+1, WIDTH-BALL_RADIUS-1), random.randrange(BALL_RADIUS+1, HEIGHT-BALL_RADIUS-1))
+    return (random.randrange(BALL_RADIUS//4+1, WIDTH-BALL_RADIUS//4-1), random.randrange(BALL_RADIUS//4+1, HEIGHT-BALL_RADIUS//4-1))
 
 def getTable(circles):
     table = np.zeros((HEIGHT*4, WIDTH*4, 3), dtype=np.float32)
     for circle in circles:
         if circle:
-            cv2.circle(table, (circle.pos[0]*4, circle.pos[1]*4), 20, circle.color, -1)
+            cv2.circle(table, (circle.pos[0]*4, circle.pos[1]*4), BALL_RADIUS, circle.color, -1)
     return table
 
 def writeData(y):
