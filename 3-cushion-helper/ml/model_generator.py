@@ -106,10 +106,12 @@ y_encoded = to_categorical(encoder.transform(y_train))
 
 # 3. 모델 구성하기
 model = Sequential()
-model.add(Dense(12, input_dim=6, activation='relu'))
+model.add(Dense(8, input_dim=6, activation='relu'))
 model.add(Dense(16, activation='relu'))
-model.add(Dropout(0.15))
-model.add(Dense(24, activation='relu'))
+model.add(Dropout(0.1))
+model.add(Dense(16, activation='relu'))
+model.add(Dropout(0.1))
+model.add(Dense(16, activation='relu'))
 model.add(Dense(16, activation='relu'))
 
 model.add(Dense(5, activation='softmax'))
@@ -141,4 +143,4 @@ for pre in pred:
     t.sort(key=lambda x: x[1], reverse=True)
     print(t)
 
-model.save("3-cushion-helper/temp_model2.h5")
+model.save("3-cushion-helper/temp_model3.h5")
