@@ -4,6 +4,8 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import Dropout
 from tensorflow.keras.utils import to_categorical
+import matplotlib.pyplot as plt
+
 from sklearn.preprocessing import LabelEncoder
 
 WIDTH = 272
@@ -86,9 +88,22 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 
 
 # 5. 모델 학습시키기
-model.fit(x_train, y_encoded, epochs=1000, batch_size=16, shuffle=True)
+history = model.fit(x_train, y_encoded, epochs=1000, batch_size=16, shuffle=True)
 model.summary()
 
+y_loss = history.history['loss']
+y_acc = history.history['accuracy']
+
+x_len = np.arange(len(y_loss))
+
+plt.plot(x_len, y_acc, c='red', label="Train-set Accuracy")
+plt.plot(x_len, y_loss, c='blue', label="Train-set Loss")
+
+plt.legend(loc='upper right')
+plt.grid()
+plt.xlabel('epoch')
+plt.ylabel('loss')
+plt.show()
 
 # 검증 데이터 확인
 pred = model.predict(x_test)
@@ -98,4 +113,4 @@ for pre in pred:
     print(t)
 
 # 모델 저장
-model.save("3-cushion-helper/temp_model.h5")
+model.save("3-cushion-helper/temp_model_tttt.h5")
