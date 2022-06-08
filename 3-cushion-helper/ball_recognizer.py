@@ -12,7 +12,7 @@ upper_white = (360, 100, 255)
 lower_yellow = (10, 120, 100)
 upper_yellow = (30, 255, 255)
 
-def find_color_center(src, color, debug=False):
+def find_color_center(src, color, correction=True, debug=False):
     if color == 'r':
         lower_color, upper_color = lower_red, upper_red
     elif color == 'y':
@@ -39,19 +39,27 @@ def find_color_center(src, color, debug=False):
 
     contours, _ = cv2.findContours(threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     contour = max(contours, key=lambda x: cv2.contourArea(x))
-
     x,y,w,h = cv2.boundingRect(contour)
 
-    cx = x + w
-    cy = y + h // 2
+    r = (w+h)//4
 
-    return (cx, cy)
+    if correction:
+        
+        cx = x + w
+        cy = y + h // 2
+    else:
+        mmt = cv2.moments(contour)
+        cx = int(mmt['m10']/mmt['m00'])
+        cy = int(mmt['m01']/mmt['m00'])
+
+    return (cx, cy), r
 
 
 if __name__ == "__main__":
     import table_recognizer
     src = cv2.imread('3-cushion-helper/test_img/2.jpg')
-    table = table_recognizer.get_warped_table(src)
+    contour = table_recognizer.find_corners(src)
+    table = table_recognizer.get_warped_table(src, contour)
     print(find_color_center(table, 'w', debug=True))
     print(find_color_center(table, 'r', debug=True))
     print(find_color_center(table, 'y', debug=True))
