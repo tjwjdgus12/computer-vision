@@ -123,7 +123,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 
 
 # 5. 모델 학습시키기
-model.fit(x_train, y_encoded, epochs=1000, batch_size=16, shuffle=True)
+model.fit(x_train, y_encoded, epochs=100, batch_size=16, shuffle=True)
 model.summary()
 
 # 6. 모델 평가하기
@@ -145,4 +145,4 @@ for pre in pred:
     t.sort(key=lambda x: x[1], reverse=True)
     print(t)
 
-model.save("temp_model2")
+model.save("temp_model2.h5")
