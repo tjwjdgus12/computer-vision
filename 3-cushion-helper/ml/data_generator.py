@@ -13,7 +13,7 @@ import random
 import cv2
 from keras.models import load_model
 
-MODEL_NAME = "temp_model"
+MODEL_NAME = "temp_model2.h5"
 
 WIDTH = 272
 HEIGHT = 136
