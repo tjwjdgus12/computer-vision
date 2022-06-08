@@ -13,7 +13,7 @@ import random
 import cv2
 from keras.models import load_model
 
-MODEL_NAME = "3-cushion-helper/model.h5"
+MODEL_NAME = "3-cushion-helper/temp_model.h5"
 
 WIDTH = 272
 HEIGHT = 136

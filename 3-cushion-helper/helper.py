@@ -7,7 +7,7 @@ WIDTH = 272
 HEIGHT = 136
 BALL_RADIUS = 3
 
-src = cv2.imread('3-cushion-helper/test_img/2.jpg')
+src = cv2.imread('3-cushion-helper/test_img/4.jpg')
 src = cv2.resize(src, (0, 0), fx=0.15, fy=0.15)
 table = table_recognizer.get_warped_table(src)
 
