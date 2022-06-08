@@ -8,61 +8,28 @@ from sklearn.preprocessing import LabelEncoder
 
 WIDTH = 272
 HEIGHT = 136
-BALL_RADIUS = 3
 
 # 랜덤시드 고정시키기
 np.random.seed(5)
 tf.random.set_seed(5)
 
-
 # 1. 데이터 준비하기
 import pandas as pd
-dataset = pd.read_csv("data.csv", delimiter=",")
+dataset = pd.read_csv("3-cushion-helper/ml/data.csv", delimiter=",")
 dataset = dataset.values
 
 # 2. 데이터셋 생성하기 : 700
-x_train = dataset[:442,0:6]
-y_train = dataset[:442,6]
-x_test = dataset[442:,0:6]
-y_test = dataset[442:,6]
+x_train = dataset[:-10,0:6]
+y_train = dataset[:-10,6]
+x_test = dataset[-10:,0:6]
+y_test = dataset[-10:,6]
 
 def getFlipNumber(n):
     d = {0:1,1:0,2:3,3:2,4:4}
     return d[n]
 
-
-x_train_copy = x_train.copy()
-y_train_copy = y_train.copy()
-
-x_train_iter = x_train_copy.copy()
-y_train_iter = y_train_copy.copy()
-
-# x_temp = []
-# y_temp = []
-
-# from tqdm import tqdm
-# for k, x in enumerate(x_train_copy):
-#     iteration = it.product([-1,0,1],repeat=6)
-#     for iters in tqdm(iteration):
-#         x_temp.append([x[i]])
-
-#         new_x = x.copy()
-
-#         for i, iter in enumerate(iters):
-#             new_x[i] = new_x[i] + iter
-
-#         x_train_iter= np.vstack([x_train_iter,new_x])
-#         y_train_iter= np.append(y_train_iter,y_train_iter[k])
-
-
-x_train = x_train_iter.copy()
-y_train = y_train_iter.copy()
-
-x_train_iter_copy = x_train_iter.copy()
-y_train_iter_copy = y_train_iter.copy()
-
-x_train_xflip = x_train_iter_copy.copy()
-y_train_xflip = y_train_iter_copy.copy()
+x_train_xflip = x_train.copy()
+y_train_xflip = y_train.copy()
 
 x_train_xflip[:, 0] = WIDTH - x_train_xflip[:,0]
 x_train_xflip[:, 2] = WIDTH - x_train_xflip[:,2]
@@ -71,8 +38,8 @@ for i in range(y_train_xflip.shape[0]):
     y_train_xflip[i] = getFlipNumber(y_train_xflip[i])
 
 
-x_train_yflip = x_train_iter_copy.copy()
-y_train_yflip = y_train_iter_copy.copy()
+x_train_yflip = x_train.copy()
+y_train_yflip = y_train.copy()
 
 x_train_yflip[:, 1] = HEIGHT - x_train_yflip[:,1]
 x_train_yflip[:, 3] = HEIGHT - x_train_yflip[:,3]
@@ -81,8 +48,8 @@ for i in range(y_train_yflip.shape[0]):
     y_train_yflip[i] = getFlipNumber(y_train_yflip[i])
 
 
-x_train_flip = x_train_iter_copy.copy()
-y_train_flip = y_train_iter_copy.copy()
+x_train_flip = x_train.copy()
+y_train_flip = y_train.copy()
 
 x_train_flip[:, 0] = WIDTH - x_train_flip[:,0]
 x_train_flip[:, 2] = WIDTH - x_train_flip[:,2]
@@ -97,8 +64,6 @@ x_train = np.vstack([x_train, x_train_xflip, x_train_yflip, x_train_flip])
 y_train = np.concatenate([y_train, y_train_xflip, y_train_yflip, y_train_flip])
 
 #######################
-
-
 
 encoder = LabelEncoder()
 encoder.fit(y_train)
@@ -124,23 +89,13 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 model.fit(x_train, y_encoded, epochs=1000, batch_size=16, shuffle=True)
 model.summary()
 
-# 6. 모델 평가하기
-# scores = model.evaluate(x_test, y_test)
-# print("%s: %.2f%%" %(model.metrics_names[1], scores[1]*100))
-# print("%s: %.2f%%" %(model.metrics_names[1], scores[1]*100))
 
-def getAccuracy(arr):
-    hit = 0
-    for i,elem in enumerate(arr):
-        print(i+1, x_test[i], y_test[i], elem)
-        if y_train[i] == elem:
-            hit+=1
-    return hit/len(arr)
-
+# 검증 데이터 확인
 pred = model.predict(x_test)
 for pre in pred:
     t = [(i, p) for i, p in enumerate(pre)]
     t.sort(key=lambda x: x[1], reverse=True)
     print(t)
 
+# 모델 저장
 model.save("3-cushion-helper/temp_model3.h5")
