@@ -58,6 +58,6 @@ def get_warped_table(src, debug=False):
 
 
 if __name__ == "__main__":
-    src = cv2.imread('3-cushion-helper/testimg/4.jpg')
-    src = cv2.resize(src, (0,0), fx=0.5, fy=0.5)
+    src = cv2.imread('3-cushion-helper/test_img/1.jpg')
+    src = cv2.resize(src, (0,0), fx=0.15, fy=0.15)
     get_warped_table(src, debug=True)
