@@ -13,7 +13,7 @@ import random
 import cv2
 import tensorflow as tf
 
-MODEL_NAME = "test2"
+MODEL_NAME = "temp_model"
 
 WIDTH = 272
 HEIGHT = 136
@@ -23,10 +23,7 @@ colors = [(255, 255, 255), (0, 0, 255), (0, 255, 255)]
 label_name = ["빨간공 왼쪽", "빨간공 오른쪽", "노란공 왼쪽", "노란공 오른쪽", "빈 쿠션"]
 circles = [None, None, None]
 
-try:
-    model = tf.keras.models.load_model(MODEL_NAME)
-except:
-    pass
+model = tf.keras.models.load_model(MODEL_NAME)
 
 class Circle:
     def __init__(self, pos, color):

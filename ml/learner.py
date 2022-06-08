@@ -3,6 +3,7 @@ import tensorflow as tf
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import Dropout
+from keras import regularizers
 from tensorflow.keras.utils import to_categorical
 from sklearn.preprocessing import LabelEncoder
 import itertools as it
@@ -22,10 +23,10 @@ dataset = pd.read_csv("data.csv", delimiter=",")
 dataset = dataset.values
 
 # 2. 데이터셋 생성하기 : 700
-x_train = dataset[:200,0:6]
-y_train = dataset[:200,6]
-x_test = dataset[200:,0:6]
-y_test = dataset[200:,6]
+x_train = dataset[:442,0:6]
+y_train = dataset[:442,6]
+x_test = dataset[442:,0:6]
+y_test = dataset[442:,6]
 
 def getFlipNumber(n):
     d = {0:1,1:0,2:3,3:2,4:4}
@@ -107,11 +108,13 @@ y_encoded = to_categorical(encoder.transform(y_train))
 
 # 3. 모델 구성하기
 model = Sequential()
-model.add(Dense(24, input_dim=6, activation='relu'))
-model.add(Dense(32, activation='relu'))
-model.add(Dropout(0.1))
-model.add(Dense(32, activation='relu'))
-model.add(Dense(24, activation='relu'))
+model.add(Dense(32, input_dim=6, activation='relu', kernel_regularizer=regularizers.l2(0.001)))
+model.add(Dense(64, activation='relu', kernel_regularizer=regularizers.l2(0.001)))
+model.add(Dense(128, activation='relu', kernel_regularizer=regularizers.l2(0.001)))
+model.add(Dropout(0.2))
+model.add(Dense(96, activation='relu', kernel_regularizer=regularizers.l2(0.001)))
+model.add(Dense(48, activation='relu', kernel_regularizer=regularizers.l2(0.001)))
+model.add(Dense(24, activation='relu', kernel_regularizer=regularizers.l2(0.001)))
 
 model.add(Dense(5, activation='softmax'))
 
@@ -120,7 +123,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 
 
 # 5. 모델 학습시키기
-model.fit(x_train, y_encoded, epochs=1500, batch_size=32)
+model.fit(x_train, y_encoded, epochs=1500, batch_size=32, shuffle=True)
 model.summary()
 
 # 6. 모델 평가하기
@@ -142,6 +145,4 @@ for pre in pred:
     t.sort(key=lambda x: x[1], reverse=True)
     print(t)
 
-model_file_name = input("[save] Input model name: ")
-if model_file_name != "":
-    model.save(model_file_name)
+model.save("temp_model")
