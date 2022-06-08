@@ -108,13 +108,13 @@ y_encoded = to_categorical(encoder.transform(y_train))
 
 # 3. 모델 구성하기
 model = Sequential()
-model.add(Dense(32, input_dim=6, activation='relu'))
-model.add(Dense(64, activation='relu'))
+model.add(Dense(8, input_dim=6, activation='relu'))
+model.add(Dense(16, activation='relu'))
 model.add(Dropout(0.2))
-model.add(Dense(96, activation='relu'))
+model.add(Dense(16, activation='relu'))
 model.add(Dropout(0.2))
-model.add(Dense(48, activation='relu'))
-model.add(Dense(24, activation='relu'))
+model.add(Dense(16, activation='relu'))
+model.add(Dense(16, activation='relu'))
 
 model.add(Dense(5, activation='softmax'))
 
@@ -123,7 +123,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 
 
 # 5. 모델 학습시키기
-model.fit(x_train, y_encoded, epochs=100, batch_size=16, shuffle=True)
+model.fit(x_train, y_encoded, epochs=1000, batch_size=16, shuffle=True)
 model.summary()
 
 # 6. 모델 평가하기
@@ -145,4 +145,4 @@ for pre in pred:
     t.sort(key=lambda x: x[1], reverse=True)
     print(t)
 
-model.save("temp_model2.h5")
+model.save("temp_model3.h5")
