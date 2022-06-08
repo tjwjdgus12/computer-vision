@@ -40,16 +40,17 @@ def find_color_center(src, color, debug=False):
     contours, _ = cv2.findContours(threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     contour = max(contours, key=lambda x: cv2.contourArea(x))
 
-    mmt = cv2.moments(contour)
-    cx = int(mmt['m10']/mmt['m00'])
-    cy = int(mmt['m01']/mmt['m00'])
+    x,y,w,h = cv2.boundingRect(contour)
+
+    cx = x + w
+    cy = y + h // 2
 
     return (cx, cy)
 
 
 if __name__ == "__main__":
     import table_recognizer
-    src = cv2.imread('3-cushion-helper/test_img/1.jpg')
+    src = cv2.imread('3-cushion-helper/test_img/2.jpg')
     table = table_recognizer.get_warped_table(src)
     print(find_color_center(table, 'w', debug=True))
     print(find_color_center(table, 'r', debug=True))

@@ -73,9 +73,9 @@ y_encoded = to_categorical(encoder.transform(y_train))
 model = Sequential()
 model.add(Dense(8, input_dim=6, activation='relu'))
 model.add(Dense(16, activation='relu'))
-model.add(Dropout(0.1))
+model.add(Dropout(0.08))
 model.add(Dense(16, activation='relu'))
-model.add(Dropout(0.1))
+model.add(Dropout(0.08))
 model.add(Dense(16, activation='relu'))
 model.add(Dense(16, activation='relu'))
 
@@ -98,4 +98,4 @@ for pre in pred:
     print(t)
 
 # 모델 저장
-model.save("3-cushion-helper/temp_model3.h5")
+model.save("3-cushion-helper/temp_model.h5")

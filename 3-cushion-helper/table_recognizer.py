@@ -52,12 +52,12 @@ def get_warped_table(src, debug=False):
     dst_point = np.array([[0, 0], [0, HEIGHT-1], [WIDTH-1, HEIGHT-1], [WIDTH-1, 0]], dtype=np.float32)
     matrix = cv2.getPerspectiveTransform(src_point, dst_point)
 
-    dst = cv2.warpPerspective(src, matrix, (WIDTH, HEIGHT))[6:-6, 6:-6]
+    dst = cv2.warpPerspective(src, matrix, (WIDTH, HEIGHT))[5:-5, 7:-7]
     if debug: cv2.imshow("debug", dst); cv2.waitKey()
     return dst
 
 
 if __name__ == "__main__":
-    src = cv2.imread('3-cushion-helper/test_img/1.jpg')
+    src = cv2.imread('3-cushion-helper/test_img/2.jpg')
     src = cv2.resize(src, (0,0), fx=0.15, fy=0.15)
     get_warped_table(src, debug=True)
