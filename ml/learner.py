@@ -108,15 +108,13 @@ y_encoded = to_categorical(encoder.transform(y_train))
 
 # 3. 모델 구성하기
 model = Sequential()
-model.add(Dense(32, input_dim=6, activation='relu', kernel_regularizer=regularizers.l2(0.001)))
-model.add(Dense(64, activation='relu', kernel_regularizer=regularizers.l2(0.001)))
+model.add(Dense(32, input_dim=6, activation='relu'))
+model.add(Dense(64, activation='relu'))
 model.add(Dropout(0.2))
-model.add(Dense(128, activation='relu', kernel_regularizer=regularizers.l2(0.001)))
+model.add(Dense(96, activation='relu'))
 model.add(Dropout(0.2))
-model.add(Dense(96, activation='relu', kernel_regularizer=regularizers.l2(0.001)))
-model.add(Dropout(0.2))
-model.add(Dense(48, activation='relu', kernel_regularizer=regularizers.l2(0.001)))
-model.add(Dense(24, activation='relu', kernel_regularizer=regularizers.l2(0.001)))
+model.add(Dense(48, activation='relu'))
+model.add(Dense(24, activation='relu'))
 
 model.add(Dense(5, activation='softmax'))
 
@@ -125,7 +123,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 
 
 # 5. 모델 학습시키기
-model.fit(x_train, y_encoded, epochs=1500, batch_size=32, shuffle=True)
+model.fit(x_train, y_encoded, epochs=1000, batch_size=16, shuffle=True)
 model.summary()
 
 # 6. 모델 평가하기
