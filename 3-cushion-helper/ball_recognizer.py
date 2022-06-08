@@ -49,6 +49,8 @@ def find_color_center(src, color, debug=False):
 
 if __name__ == "__main__":
     import table_recognizer
-    src = cv2.imread('3-cushion-helper/testimg/8.png')
+    src = cv2.imread('3-cushion-helper/test_img/1.jpg')
     table = table_recognizer.get_warped_table(src)
-    ball_point = find_color_center(table, 'w', debug=True)
+    print(find_color_center(table, 'w', debug=True))
+    print(find_color_center(table, 'r', debug=True))
+    print(find_color_center(table, 'y', debug=True))

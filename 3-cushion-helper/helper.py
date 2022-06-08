@@ -7,8 +7,8 @@ WIDTH = 272
 HEIGHT = 136
 BALL_RADIUS = 3
 
-src = cv2.imread('3-cushion-helper/testimg/6.jpg')
-src = cv2.resize(src, (0, 0), fx=0.66, fy=0.66)
+src = cv2.imread('3-cushion-helper/test_img/1.jpg')
+src = cv2.resize(src, (0, 0), fx=0.15, fy=0.15)
 table = table_recognizer.get_warped_table(src)
 
 blank = np.zeros((HEIGHT, WIDTH, 3), dtype=np.float32)
@@ -26,7 +26,7 @@ cv2.circle(blank, yellow_ball_point, BALL_RADIUS, (0,255,255), -1)
 label_name = ["빨간공 왼쪽", "빨간공 오른쪽", "노란공 왼쪽", "노란공 오른쪽", "빈 쿠션"]
 
 from keras.models import load_model
-model = load_model("3-cushion-helper/model.h5")
+model = load_model("3-cushion-helper/temp_model3.h5")
 
 result = model.predict([white_ball_point + red_ball_point + yellow_ball_point])[0]
 result = [(i, round(p*100)) for i, p in enumerate(result)]
@@ -37,4 +37,5 @@ for label, prob in result:
 cv2.imshow("src", src)
 cv2.imshow("result", blank)
 cv2.waitKey()
+
 cv2.destroyAllWindows()
